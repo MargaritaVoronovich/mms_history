@@ -15,20 +15,24 @@ import java.io.IOException;
 public class QueueConsumer {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+
+    private final OrderAuditEventRepository orderAuditEventRepository;
 
     @Autowired
-    private OrderAuditEventRepository orderAuditEventRepository;
+    public QueueConsumer(ObjectMapper objectMapper, OrderAuditEventRepository orderAuditEventRepository) {
+        this.objectMapper = objectMapper;
+        this.orderAuditEventRepository = orderAuditEventRepository;
+    }
 
     @RabbitListener(queues = {"history_queue"})
-    public void receiveMessage(String message) throws IOException, InterruptedException {
+    public void receiveMessage(String message) throws IOException {
         logger.info("Received (String) " + message);
 
-        //TODO: refactor
-        Long orderId = objectMapper.readTree(message).path("order").path("id").longValue();
+        Long orderId = objectMapper.readTree(message).path("orderId").longValue();
+        String status = objectMapper.readTree(message).path("status").asText();
 
-        OrderAuditEvent orderAuditEvent = new OrderAuditEvent(orderId, "created");
+        OrderAuditEvent orderAuditEvent = new OrderAuditEvent(orderId, status);
 
         orderAuditEventRepository.save(orderAuditEvent);
     }

@@ -9,8 +9,12 @@ import java.util.List;
 
 @Service
 public class OrderAuditEventService {
+    private final OrderAuditEventRepository orderAuditEventRepository;
+
     @Autowired
-    private OrderAuditEventRepository orderAuditEventRepository;
+    public OrderAuditEventService(OrderAuditEventRepository orderAuditEventRepository) {
+        this.orderAuditEventRepository = orderAuditEventRepository;
+    }
 
     public List<OrderAuditEvent> getAll() {
         return orderAuditEventRepository.findAll();
