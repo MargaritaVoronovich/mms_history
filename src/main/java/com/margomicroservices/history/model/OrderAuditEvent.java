@@ -20,10 +20,14 @@ public class OrderAuditEvent implements Serializable {
     private Long orderId;
 
     @Column(columnDefinition = "varchar(20)")
-    private String orderStatus;
+    private OrderStatus orderStatus;
 
-    public OrderAuditEvent(Long orderId, String orderStatus) {
+    public OrderAuditEvent(Long orderId, OrderStatus orderStatus) {
         this.orderId = orderId;
         this.orderStatus = orderStatus;
+    }
+
+    public enum OrderStatus {
+        CREATED, DELIVERED;
     }
 }

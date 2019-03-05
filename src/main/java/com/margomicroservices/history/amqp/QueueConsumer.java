@@ -32,7 +32,7 @@ public class QueueConsumer {
         Long orderId = objectMapper.readTree(message).path("orderId").longValue();
         String status = objectMapper.readTree(message).path("status").asText();
 
-        OrderAuditEvent orderAuditEvent = new OrderAuditEvent(orderId, status);
+        OrderAuditEvent orderAuditEvent = new OrderAuditEvent(orderId, OrderAuditEvent.OrderStatus.valueOf(status));
 
         orderAuditEventRepository.save(orderAuditEvent);
     }

@@ -16,6 +16,8 @@ public class RabbitConfig {
     private String queueName;
     @Value("${topic.exchange}")
     private String topicExchange;
+    @Value("${fanout.exchange}")
+    private String fanoutExchange;
     @Value("${routing.key}")
     private String routingKey;
 
@@ -25,13 +27,23 @@ public class RabbitConfig {
     }
 
     @Bean
-    TopicExchange exchange() {
+    TopicExchange topicExchange() {
         return new TopicExchange(topicExchange);
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
+    FanoutExchange fanoutExchange() {
+        return new FanoutExchange(fanoutExchange);
+    }
+
+    @Bean
+    Binding topicBinding(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+    }
+
+    @Bean
+    Binding fanoutBinding(Queue queue, FanoutExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange);
     }
 
     @Bean
@@ -49,5 +61,4 @@ public class RabbitConfig {
     MessageListenerAdapter listenerAdapter(QueueConsumer consumer) {
         return new MessageListenerAdapter(consumer, LISTENER_METHOD);
     }
-
 }

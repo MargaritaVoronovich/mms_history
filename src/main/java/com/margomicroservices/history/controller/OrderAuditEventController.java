@@ -13,8 +13,12 @@ import java.util.List;
 @RestController
 public class OrderAuditEventController {
 
+    private final OrderAuditEventService orderAuditEventService;
+
     @Autowired
-    private OrderAuditEventService orderAuditEventService;
+    public OrderAuditEventController(OrderAuditEventService orderAuditEventService) {
+        this.orderAuditEventService = orderAuditEventService;
+    }
 
     @GetMapping("/deliveries")
     public ResponseEntity<List<OrderAuditEvent>> all() {
