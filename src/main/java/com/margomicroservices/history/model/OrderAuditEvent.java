@@ -3,6 +3,7 @@ package com.margomicroservices.history.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,10 +17,11 @@ public class OrderAuditEvent implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "bigint")
+    @Column
     private Long orderId;
 
-    @Column(columnDefinition = "varchar(20)")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus orderStatus;
 
     public OrderAuditEvent(Long orderId, OrderStatus orderStatus) {
