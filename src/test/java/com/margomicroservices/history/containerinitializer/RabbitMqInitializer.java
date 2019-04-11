@@ -3,9 +3,12 @@ package com.margomicroservices.history.containerinitializer;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.io.UrlResource;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+
+import java.net.MalformedURLException;
 
 public class RabbitMqInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     private static final int PORT = 5672;
@@ -16,9 +19,16 @@ public class RabbitMqInitializer implements ApplicationContextInitializer<Config
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
+        try {
+            UrlResource resource = new UrlResource("file:/conf/myrabbit.conf");
+            resource.createRelative();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         RABBIT_MQ = new GenericContainer("rabbitmq:3-management")
                 .withClasspathResourceMapping(
-                        "../order/conf/myrabbit.conf",
+                        "./conf/myrabbit.conf",
                         "/etc/rabbitmq/rabbitmq.conf",
                         BindMode.READ_ONLY
                 )
